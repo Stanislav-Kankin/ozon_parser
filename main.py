@@ -9,6 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
+
 def setup_driver():
     """Настройка ChromeDriver с автоматическим подбором версии."""
     options = Options()
@@ -29,6 +30,7 @@ def setup_driver():
     )
     return driver
 
+
 def search_products(driver, search_query):
     """Поиск товаров на Ozon."""
     driver.get("https://www.ozon.ru/")
@@ -38,12 +40,12 @@ def search_products(driver, search_query):
         WebDriverWait(driver, 15).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "input[placeholder='Искать на Ozon']"))
         ).send_keys(search_query + Keys.RETURN)
-        
+
         # Ждем загрузки результатов
         WebDriverWait(driver, 15).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "div[data-widget='searchResultsV2']"))
         )
-        
+
         # Прокрутка для загрузки всех товаров
         last_height = driver.execute_script("return document.body.scrollHeight")
         for _ in range(5):
@@ -58,6 +60,7 @@ def search_products(driver, search_query):
     except Exception as e:
         print(f"🚨 Ошибка при поиске: {e}")
         return False
+
 
 def parse_products(driver):
     """Парсинг товаров из HTML."""
@@ -88,11 +91,13 @@ def parse_products(driver):
 
     return products
 
+
 def save_to_json(data, filename="ozon_products.json"):
     """Сохранение данных в JSON."""
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
     print(f"💾 Данные сохранены в {filename}")
+
 
 def main():
     search_query = input("🔎 Введите товар для поиска: ")
@@ -111,6 +116,7 @@ def main():
     finally:
         driver.quit()
         print("✅ Работа завершена")
+
 
 if __name__ == "__main__":
     main()
